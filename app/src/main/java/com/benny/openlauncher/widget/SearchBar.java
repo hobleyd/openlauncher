@@ -51,6 +51,8 @@ import org.slf4j.LoggerFactory;
 import org.threeten.bp.ZonedDateTime;
 import org.threeten.bp.format.DateTimeFormatter;
 
+import java.text.Normalizer;
+import java.text.Normalizer.Form;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -267,12 +269,16 @@ public class SearchBar extends FrameLayout {
                 }
 
                 String s = constraint.toString().toLowerCase();
+                s = Normalizer.normalize(s, Form.NFD).replaceAll("\\p{InCombiningDiacriticalMarks}+", "");
+                String itemLabel = item._label.toLowerCase();
+                itemLabel = Normalizer.normalize(itemLabel, Form.NFD).replaceAll("\\p{InCombiningDiacriticalMarks}+", "");
+
                 if (Setup.appSettings().getSearchBarStartsWith()) {
-                    if (item._label.toLowerCase().startsWith(s)) {
+                    if (itemLabel.startsWith(s)) {
                         return true;
                     }
                 } else {
-                    if (item._label.toLowerCase().contains(s)) {
+                    if (itemLabel.contains(s)) {
                         return true;
                     }
                 }
